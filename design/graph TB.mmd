@@ -1,0 +1,61 @@
+graph TB
+    %% External Layer
+    subgraph External_Layer
+        CLIENT[Client/Browser<br/>HTTP Requests]
+    end
+
+       %% Application Entry Point
+    subgraph Application_Entry
+        MAIN["main.ts<br/>NestFactory.create()"]
+    end
+
+    %% Module Layer
+    subgraph Module_Layer
+        APP_MODULE[AppModule<br/>Root Module]
+    end
+
+    %% Controller Layer
+    subgraph Controller_Layer
+        APP_CONTROLLER["AppController<br/>@Controller()"]
+        APP_CONTROLLER_GET["GET /<br/>@Get()"]
+    end
+
+    %% Service Layer
+    subgraph Service_Layer
+        APP_SERVICE["AppService<br/>@Injectable()"]
+        APP_SERVICE_METHOD["getHello()<br/>Business Logic"]
+    end
+
+    %% Testing Layer
+    subgraph Testing_Layer
+        UNIT_TEST[app.controller.spec.ts<br/>Unit Tests]
+        E2E_TEST[test/app.e2e-spec.ts<br/>End-to-End Tests]
+    end
+
+    %% Dependencies and Data Flow
+    CLIENT --> APP_CONTROLLER
+    APP_CONTROLLER --> APP_CONTROLLER_GET
+    APP_CONTROLLER_GET --> APP_SERVICE_METHOD
+    APP_SERVICE_METHOD --> APP_SERVICE
+    APP_SERVICE --> APP_MODULE
+    APP_MODULE --> MAIN
+    MAIN --> APP_CONTROLLER
+
+    %% Testing Dependencies
+    UNIT_TEST -.-> APP_CONTROLLER
+    E2E_TEST -.-> APP_CONTROLLER
+
+    %% Styling
+    classDef entryPoint fill:#e1f5fe,stroke:#01579b,stroke-width:2px,color:black,font-weight:bold
+    classDef module fill:#f3e5f5,stroke:#4a148c,stroke-width:2px,color:black,font-weight:bold
+    classDef controller fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px,color:black,font-weight:bold
+    classDef service fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:black,font-weight:bold
+    classDef test fill:#fce4ec,stroke:#880e4f,stroke-width:2px,color:black,font-weight:bold
+    classDef external fill:#f5f5f5,stroke:#424242,stroke-width:2px,color:black,font-weight:bold
+
+    class MAIN entryPoint
+    class APP_MODULE module
+    class APP_CONTROLLER,APP_CONTROLLER_GET controller
+    class APP_SERVICE,APP_SERVICE_METHOD service
+    class UNIT_TEST,E2E_TEST test
+    class CLIENT external
